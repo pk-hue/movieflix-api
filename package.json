@@ -21,6 +21,7 @@
     "typescript-eslint": "^8.31.0"
   },
   "dependencies": {
+    "@prisma/client": "^6.7.0",
     "express": "^5.1.0"
   }
 }
