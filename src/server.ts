@@ -32,7 +32,7 @@ app.post("/movies", async (req, res) => {
         })
 
         if(movieWithSameTitle){
-            return res.status(409).send({message: "Já existe um filme cadastrado com este título"})
+            return res.status(409).send({message: "Já existe um filme cadastrado com este título."})
         }
 
         await prisma.movie.create({
@@ -45,7 +45,7 @@ app.post("/movies", async (req, res) => {
             }
     });
     }catch(error){
-        return res.status(500).send({ message: "Erro ao adicionar filme!" });
+        return res.status(500).send({ message: "Erro ao adicionar filme." });
     }
     res.status(201).send("");
 });
@@ -72,9 +72,51 @@ app.put("/movies/:id", async (req, res) => {
         data: data
     });
     }catch(error){
-        return res.status(500).send({message: "Falha ao atualizar o registro"});
+        return res.status(500).send({message: "Falha ao atualizar o registro."});
     }
     res.status(200).send({mensage: "Filme atualizado com sucesso."});
+});
+
+app.delete("/movies/:id", async (req, res) => {
+    const id = Number(req.params.id);
+     
+    try{
+        const movie = await prisma.movie.findUnique({where: {id}});
+
+        if(!movie){
+            return res.status(404).send({message: "Filme não encrontrado para remoção."})
+        }
+
+         await prisma.movie.delete({where: {id}});
+
+    }catch(error){
+        return res.status(500).send({message: "Falha ao remover registro."});
+    }
+    res.status(200).send({message: "Filme deletado com sucesso."})
+});
+
+app.get("/movies/:genreName", async (req, res) => {
+    
+   try{
+    const moviesFilteredByGenderName = await prisma.movie.findMany({
+        include: {
+            genres: true,
+            languages: true
+        },
+        where: {
+            genres: {
+                name: {
+                    equals: req.params.genreName,
+                    mode: "insensitive"
+                }
+            }
+        }
+    });
+    res.status(200).send(moviesFilteredByGenderName);
+   }catch(error){
+        return res.status(500).send({message: "Falha ao buscar filmes."});
+   }
+
 });
 
 app.listen(port, () => {
