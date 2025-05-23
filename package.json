@@ -22,6 +22,8 @@
   },
   "dependencies": {
     "@prisma/client": "^6.7.0",
-    "express": "^5.1.0"
+    "@types/swagger-ui-express": "^4.1.8",
+    "express": "^5.1.0",
+    "swagger-ui-express": "^5.0.1"
   }
 }
